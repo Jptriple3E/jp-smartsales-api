@@ -1,0 +1,508 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101827">
+<title>JP SmartSales & Inventory</title>
+<meta name="description" content="Manage sales, inventory, customers and business performance with JP SmartSales.">
+<style>
+:root {
+  --bg:#f4f6fa;
+  --dark:#101827;
+  --panel:#ffffff;
+  --muted:#718096;
+  --blue:#315efb;
+  --border:#e6eaf0;
+  --green:#159568;
+  --red:#d94b55;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--dark)}
+button,input,select{font:inherit}
+button{cursor:pointer;border:0;border-radius:9px;padding:12px 17px;font-weight:700}
+.primary{background:var(--blue);color:white}
+.secondary{background:#edf1ff;color:var(--blue)}
+.darkbtn{background:var(--dark);color:white}
+.hidden{display:none!important}
+header{height:70px;background:white;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 6%;position:sticky;top:0;z-index:10}
+.logo{font-size:20px;font-weight:900;letter-spacing:-1px}
+.logo span{color:var(--blue)}
+nav{display:flex;align-items:center;gap:12px}
+nav a{color:var(--dark);text-decoration:none;font-size:14px;font-weight:600}
+.hero{padding:75px 7% 65px;background:linear-gradient(130deg,#101827,#192e52);color:white}
+.hero-inner{max-width:1100px;margin:auto}
+.hero h1{font-size:clamp(38px,6vw,65px);line-height:1.07;max-width:750px;margin:15px 0}
+.hero p{color:#c4cee0;font-size:17px;line-height:1.7;max-width:650px}
+.eyebrow{color:#92aaff;font-weight:800;font-size:12px;letter-spacing:2px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.hero .secondary{background:white}
+.container{max-width:1150px;margin:auto;padding:35px 20px}
+.section-title{font-size:27px;margin:0 0 10px}
+.muted{color:var(--muted);line-height:1.6}
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:17px;margin-top:25px}
+.feature,.panel,.stat,.product-card{background:white;border:1px solid var(--border);border-radius:14px;padding:20px}
+.feature h3{margin:10px 0 6px}
+.feature p{font-size:14px;color:var(--muted);line-height:1.6}
+.demo-wrap{background:#eaf0ff;padding:35px 15px}
+.demo-header{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.demo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:20px}
+.stat strong{display:block;font-size:25px;margin-top:9px}
+.stat small{color:var(--muted)}
+.demo-products{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:13px;margin-top:18px}
+.product-card h3{margin:7px 0}
+.product-card button{width:100%;margin-top:12px}
+.product-card .price{font-size:20px;font-weight:800;color:var(--blue)}
+.notice{font-size:12px;color:#755a11;background:#fff4cf;padding:11px 13px;border-radius:9px;margin-top:15px}
+.auth-area{max-width:470px;margin:45px auto;padding:0 17px}
+.auth-box{background:white;border:1px solid var(--border);padding:26px;border-radius:15px}
+.auth-box h2{margin-top:0}
+.field{margin:15px 0}
+.field label{display:block;font-size:13px;font-weight:700;margin-bottom:7px}
+.field input,.field select{width:100%;padding:13px;border:1px solid var(--border);border-radius:8px;background:white;outline-color:var(--blue)}
+.auth-box button{width:100%}
+.switch{text-align:center;font-size:14px;margin-top:18px}
+.switch a{color:var(--blue);font-weight:700;cursor:pointer}
+#app{min-height:80vh}
+.workspace{display:grid;grid-template-columns:230px 1fr;min-height:85vh}
+.sidebar{background:#101827;color:white;padding:25px 15px}
+.sidebar h3{padding-left:12px}
+.sidebar button{width:100%;text-align:left;background:transparent;color:#d4dceb;margin:4px 0}
+.sidebar button.active,.sidebar button:hover{background:#263858;color:white}
+.main{padding:27px;min-width:0}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:25px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.panel{margin-top:18px;overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:450px}
+td,th{text-align:left;padding:13px;border-bottom:1px solid var(--border);font-size:13px}
+th{color:var(--muted)}
+.form-row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.message{padding:12px;border-radius:8px;margin:12px 0;font-size:14px}
+.error{background:#ffeded;color:#a12c35}
+.success{background:#e6f8ef;color:#08764c}
+footer{text-align:center;padding:30px;color:var(--muted);font-size:13px}
+@media(max-width:700px){
+ header{padding:0 15px}
+ nav a{display:none}
+ .hero{padding:55px 22px}
+ .demo-grid{grid-template-columns:repeat(2,1fr)}
+ .workspace{grid-template-columns:1fr}
+ .sidebar{display:flex;overflow-x:auto;padding:10px}
+ .sidebar h3{display:none}
+ .sidebar button{width:auto;white-space:nowrap}
+ .main{padding:17px}
+ .stats{grid-template-columns:repeat(2,1fr)}
+ .form-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">JP <span>SmartSales</span></div>
+  <nav>
+    <a href="#features">Features</a>
+    <a href="#demo">Free demo</a>
+    <button class="secondary" onclick="showAuth('login')">Log in</button>
+    <button class="primary" onclick="showAuth('register')">Get started</button>
+  </nav>
+</header>
+
+<section id="home">
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="eyebrow">BUSINESS MANAGEMENT, SIMPLIFIED</div>
+      <h1>Run your business with more control.</h1>
+      <p>Manage your products, track sales, monitor stock and understand your business performance from one professional workspace.</p>
+      <div class="hero-actions">
+        <button class="primary" onclick="showAuth('register')">Create your account</button>
+        <button class="secondary" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">Explore free demo</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" id="features">
+    <h2 class="section-title">Everything your business needs to stay organised.</h2>
+    <p class="muted">One platform for everyday business operations.</p>
+    <div class="features">
+      <div class="feature"><div>📦</div><h3>Inventory control</h3><p>Organise products, monitor stock levels and identify items that need restocking.</p></div>
+      <div class="feature"><div>🛒</div><h3>Sales management</h3><p>Keep track of transactions, orders and business sales.</p></div>
+      <div class="feature"><div>📊</div><h3>Business reports</h3><p>Understand your revenue, product performance and business activity.</p></div>
+      <div class="feature"><div>🤖</div><h3>AI business tools</h3><p>Our planned AI tools will help businesses understand their operations and make better decisions.</p></div>
+      <div class="feature"><div>🌐</div><h3>Online storefront</h3><p>Build a digital storefront and showcase products to customers.</p></div>
+      <div class="feature"><div>👥</div><h3>Customer management</h3><p>Keep customer records and organise your business relationships.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="demo-wrap" id="demo">
+<div class="container">
+  <div class="demo-header">
+    <div>
+      <div class="eyebrow">TRY BEFORE YOU BUY</div>
+      <h2 class="section-title">Explore the interactive demo</h2>
+      <p class="muted">Test how a sample supermarket manages its products and sales.</p>
+    </div>
+    <button class="primary" onclick="showAuth('register')">Create my workspace</button>
+  </div>
+  <div class="notice">DEMO MODE: These are fictional records. Demo sales only change this temporary sample screen. They do not affect a real business or the database.</div>
+  <div class="demo-grid" id="demoStats"></div>
+  <div class="demo-products" id="demoProducts"></div>
+  <div class="panel">
+    <h3>Demo activity</h3>
+    <div id="demoActivity" class="muted">No demo sales yet. Try recording a sample sale above.</div>
+    <button class="secondary" onclick="resetDemo()">Reset demo</button>
+  </div>
+</div>
+</section>
+
+<section id="auth" class="hidden">
+ <div class="auth-area">
+  <div class="auth-box">
+    <h2 id="authTitle">Create your account</h2>
+    <p class="muted" id="authDescription">Start managing your business with JP SmartSales.</p>
+    <div id="authMessage"></div>
+    <div id="nameField" class="field">
+      <label>Full name</label><input id="fullName" placeholder="Your full name" autocomplete="name">
+    </div>
+    <div class="field">
+      <label>Email address</label><input id="email" type="email" placeholder="you@example.com" autocomplete="email">
+    </div>
+    <div class="field">
+      <label>Password</label><input id="password" type="password" placeholder="At least 12 characters" autocomplete="current-password">
+    </div>
+    <button class="primary" id="authSubmit" onclick="submitAuth()">Create account</button>
+    <div class="switch" id="authSwitch">Already have an account? <a onclick="showAuth('login')">Log in</a></div>
+    <div class="switch"><a onclick="showHome()">Back to homepage</a></div>
+  </div>
+ </div>
+</section>
+
+<section id="app" class="hidden">
+  <div class="workspace">
+    <aside class="sidebar">
+      <h3>JP SmartSales</h3>
+      <button class="active" onclick="showPage('overview',this)">▦ Overview</button>
+      <button onclick="showPage('products',this)">📦 Products</button>
+      <button onclick="showPage('workspace',this)">🏢 My business</button>
+      <button onclick="logout()">↪ Log out</button>
+    </aside>
+    <main class="main">
+      <div class="topline">
+        <div><h2 id="pageTitle">Business overview</h2><div class="muted" id="welcome"></div></div>
+        <button class="secondary" onclick="loadBusinesses()">Refresh</button>
+      </div>
+      <div id="appMessage"></div>
+      <div id="appContent"></div>
+    </main>
+  </div>
+</section>
+
+<footer>© 2026 JP Digital AI · JP SmartSales & Inventory</footer>
+
+<script>
+const API = "https://jp-smartsales-api.emmanueleboh219.workers.dev";
+let demo = null;
+let authMode = "register";
+let token = sessionStorage.getItem("jp_token") || "";
+let currentBusiness = null;
+let businesses = [];
+
+async function api(path, options={}) {
+  const headers = {"Content-Type":"application/json",...(options.headers||{})};
+  if(token) headers.Authorization = "Bearer " + token;
+  const response = await fetch(API + path,{...options,headers});
+  let data;
+  try { data = await response.json(); } catch { data = {}; }
+  if(!response.ok) throw new Error(data.error || "Request failed.");
+  return data;
+}
+
+function money(value) {
+  return new Intl.NumberFormat("en-NG",{style:"currency",currency:"NGN",maximumFractionDigits:0}).format(value);
+}
+
+async function loadDemo() {
+  try {
+    demo = await api("/api/demo");
+    renderDemo();
+  } catch(error) {
+    document.getElementById("demoProducts").innerHTML = "<p>Demo is temporarily unavailable. Please try again.</p>";
+  }
+}
+
+function renderDemo() {
+  if(!demo) return;
+  const s = demo.summary;
+  document.getElementById("demoStats").innerHTML = `
+    <div class="stat"><small>Demo sales today</small><strong>${money(s.salesToday)}</strong></div>
+    <div class="stat"><small>Demo orders</small><strong>${s.ordersToday}</strong></div>
+    <div class="stat"><small>Products</small><strong>${demo.products.length}</strong></div>
+    <div class="stat"><small>Low stock items</small><strong>${demo.products.filter(p=>p.stock<=12).length}</strong></div>`;
+  document.getElementById("demoProducts").innerHTML = demo.products.map(p=>`
+    <div class="product-card">
+      <small class="muted">SAMPLE PRODUCT</small>
+      <h3>${escapeHtml(p.name)}</h3>
+      <div class="price">${money(p.price)}</div>
+      <p class="muted">Available stock: <b>${p.stock}</b></p>
+      <button class="primary" onclick="demoSale('${p.id}')">Record demo sale</button>
+    </div>`).join("");
+}
+
+function demoSale(id) {
+  const p = demo.products.find(x=>x.id===id);
+  if(!p || p.stock<=0) return;
+  p.stock--;
+  demo.summary.salesToday += p.price;
+  demo.summary.ordersToday++;
+  document.getElementById("demoActivity").innerHTML =
+    `<div class="message success">Demo sale recorded: 1 × ${escapeHtml(p.name)} for ${money(p.price)}. Remaining demo stock: ${p.stock}.</div>`;
+  renderDemo();
+}
+
+async function resetDemo() {
+  try {
+    demo = await api("/api/demo");
+    document.getElementById("demoActivity").textContent="Demo has been reset.";
+    renderDemo();
+  } catch(e) {}
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+function hideSections() {
+  ["home","auth","app"].forEach(id=>document.getElementById(id).classList.add("hidden"));
+}
+
+function showHome() {
+  hideSections();
+  document.getElementById("home").classList.remove("hidden");
+  window.scrollTo(0,0);
+}
+
+function showAuth(mode) {
+  authMode=mode;
+  hideSections();
+  document.getElementById("auth").classList.remove("hidden");
+  document.getElementById("authTitle").textContent=mode==="register"?"Create your account":"Welcome back";
+  document.getElementById("authDescription").textContent=mode==="register"?"Start managing your business with JP SmartSales.":"Log in to access your business workspace.";
+  document.getElementById("nameField").classList.toggle("hidden",mode==="login");
+  document.getElementById("authSubmit").textContent=mode==="register"?"Create account":"Log in";
+  document.getElementById("authSwitch").innerHTML=mode==="register"?'Already have an account? <a onclick="showAuth(\\'login\\')">Log in</a>':'New to JP SmartSales? <a onclick="showAuth(\\'register\\')">Create an account</a>';
+  document.getElementById("authMessage").innerHTML="";
+  window.scrollTo(0,0);
+}
+
+function showMessage(id,text,type="error") {
+  document.getElementById(id).innerHTML=`<div class="message ${type}">${escapeHtml(text)}</div>`;
+}
+
+async function submitAuth() {
+  const button=document.getElementById("authSubmit");
+  button.disabled=true;
+  button.textContent="Please wait...";
+  try {
+    const body={
+      email:document.getElementById("email").value.trim(),
+      password:document.getElementById("password").value
+    };
+    let path="/api/auth/login";
+    if(authMode==="register") {
+      body.full_name=document.getElementById("fullName").value.trim();
+      path="/api/auth/register";
+    }
+    const result=await api(path,{method:"POST",body:JSON.stringify(body)});
+    token=result.token;
+    sessionStorage.setItem("jp_token",token);
+    await openDashboard(result.user);
+  } catch(error) {
+    showMessage("authMessage",error.message);
+  } finally {
+    button.disabled=false;
+    button.textContent=authMode==="register"?"Create account":"Log in";
+  }
+}
+
+async function openDashboard(user) {
+  hideSections();
+  document.getElementById("app").classList.remove("hidden");
+  document.getElementById("welcome").textContent="Welcome, "+(user?.full_name||"Business owner");
+  await loadBusinesses();
+}
+
+async function loadBusinesses() {
+  try {
+    const result=await api("/api/businesses");
+    businesses=result.businesses||[];
+    renderOverview();
+  } catch(error) {
+    showMessage("appMessage",error.message);
+  }
+}
+
+function renderOverview() {
+  const content=document.getElementById("appContent");
+  if(!businesses.length) {
+    content.innerHTML=`
+      <div class="panel">
+        <h3>Create your business workspace</h3>
+        <p class="muted">Set up a workspace for the business you want to manage.</p>
+        <div class="field"><label>Business name</label><input id="businessName" placeholder="e.g. Emmanuel Supermarket"></div>
+        <div class="field"><label>Business type</label>
+          <select id="businessType">
+            <option value="Retail">Retail shop</option><option value="Supermarket">Supermarket</option>
+            <option value="Fashion">Fashion / Boutique</option><option value="Restaurant">Restaurant</option>
+            <option value="Pharmacy">Pharmacy</option><option value="Wholesale">Wholesale</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <button class="primary" onclick="createBusiness()">Create workspace</button>
+      </div>`;
+    return;
+  }
+  content.innerHTML=`
+    <div class="stats">
+      <div class="stat"><small>Your workspaces</small><strong>${businesses.length}</strong></div>
+      <div class="stat"><small>Unlocked workspaces</small><strong>${businesses.filter(b=>b.access_level==="unlocked").length}</strong></div>
+      <div class="stat"><small>Platform access</small><strong style="font-size:17px">Workspace based</strong></div>
+    </div>
+    <div class="panel">
+      <h3>Your business workspaces</h3>
+      <p class="muted">Choose a workspace to view its available features.</p>
+      ${businesses.map(b=>`
+        <div style="padding:15px 0;border-bottom:1px solid #e6eaf0">
+          <b>${escapeHtml(b.name)}</b>
+          <p class="muted">${escapeHtml(b.business_type)} · ${escapeHtml(b.currency)} · ${escapeHtml(b.role)}</p>
+          <p>${b.access_level==="unlocked"?"Full access unlocked":"Workspace locked — payment required"}</p>
+          <button class="primary" onclick="selectBusiness('${b.id}')">Open workspace</button>
+        </div>`).join("")}
+        <button class="secondary" style="margin-top:15px" onclick="showPage('workspace')">Add another business</button>
+    </div>`;
+}
+
+async function createBusiness() {
+  const name=document.getElementById("businessName")?.value.trim();
+  const type=document.getElementById("businessType")?.value;
+  if(!name) return showMessage("appMessage","Enter your business name.");
+  try {
+    await api("/api/businesses",{method:"POST",body:JSON.stringify({
+      name,business_type:type,currency:"NGN",timezone:"Africa/Lagos"
+    })});
+    showMessage("appMessage","Business workspace created. It is currently locked until payment is verified.","success");
+    await loadBusinesses();
+  } catch(error) {
+    showMessage("appMessage",error.message);
+  }
+}
+
+async function selectBusiness(id) {
+  currentBusiness=businesses.find(b=>b.id===id);
+  if(!currentBusiness) return;
+  if(currentBusiness.access_level!=="unlocked") {
+    document.getElementById("pageTitle").textContent="Workspace access";
+    document.getElementById("appContent").innerHTML=`
+      <div class="panel">
+        <h3>${escapeHtml(currentBusiness.name)}</h3>
+        <div class="notice">This workspace is locked. Full features become available after the one-time payment is verified.</div>
+        <h2>$49 USD — one-time payment</h2>
+        <p class="muted">One payment unlocks the core JP SmartSales features for this business workspace. Payment processing is not connected yet.</p>
+        <button class="secondary" onclick="renderOverview()">Back to workspaces</button>
+      </div>`;
+    return;
+  }
+  showPage("products");
+}
+
+async function showPage(page,button) {
+  document.querySelectorAll(".sidebar button").forEach(b=>b.classList.remove("active"));
+  if(button) button.classList.add("active");
+  if(page==="overview") {document.getElementById("pageTitle").textContent="Business overview";renderOverview();return;}
+  if(page==="workspace") {document.getElementById("pageTitle").textContent="Create a business";renderOverview();return;}
+  if(page==="products") {
+    document.getElementById("pageTitle").textContent="Products & inventory";
+    if(!currentBusiness) {
+      document.getElementById("appContent").innerHTML="<div class='panel'>Choose a business workspace first.</div>";
+      return;
+    }
+    try {
+      const result=await api("/api/products?business_id="+encodeURIComponent(currentBusiness.id));
+      renderProducts(result.products||[]);
+    } catch(error) {
+      document.getElementById("appContent").innerHTML=`<div class="panel"><div class="message error">${escapeHtml(error.message)}</div><button class="secondary" onclick="renderOverview()">Back to workspaces</button></div>`;
+    }
+  }
+}
+
+function renderProducts(products) {
+  document.getElementById("appContent").innerHTML=`
+    <div class="panel">
+      <h3>Add a product</h3>
+      <div class="form-row">
+        <div class="field"><label>Product name</label><input id="pName" placeholder="Product name"></div>
+        <div class="field"><label>SKU (optional)</label><input id="pSku" placeholder="SKU"></div>
+        <div class="field"><label>Selling price (NGN)</label><input id="pPrice" type="number" min="0" placeholder="5000"></div>
+        <div class="field"><label>Cost price (NGN)</label><input id="pCost" type="number" min="0" placeholder="3000"></div>
+        <div class="field"><label>Stock quantity</label><input id="pStock" type="number" min="0" placeholder="20"></div>
+        <div class="field"><label>Unit</label><input id="pUnit" value="piece"></div>
+      </div>
+      <button class="primary" onclick="addProduct()">Save product</button>
+    </div>
+    <div class="panel">
+      <h3>Product inventory (${products.length})</h3>
+      <table><thead><tr><th>Product</th><th>SKU</th><th>Selling price</th><th>Stock</th></tr></thead>
+      <tbody>${products.map(p=>`<tr><td>${escapeHtml(p.name)}</td><td>${escapeHtml(p.sku||"-")}</td><td>${money(p.selling_price_minor/100)}</td><td>${Number(p.stock_qty_milli)/1000}</td></tr>`).join("")}</tbody></table>
+      ${products.length?"":"<p class='muted'>No products added yet.</p>"}
+    </div>`;
+}
+
+async function addProduct() {
+  try {
+    const name=document.getElementById("pName").value.trim();
+    const price=Number(document.getElementById("pPrice").value);
+    const cost=Number(document.getElementById("pCost").value||0);
+    const stock=Number(document.getElementById("pStock").value||0);
+    if(!name || !Number.isFinite(price)||price<0||!Number.isFinite(cost)||cost<0||!Number.isFinite(stock)||stock<0) {
+      throw new Error("Enter a valid product name, price and stock quantity.");
+    }
+    await api("/api/products",{method:"POST",body:JSON.stringify({
+      business_id:currentBusiness.id,
+      name,
+      sku:document.getElementById("pSku").value.trim(),
+      selling_price_minor:Math.round(price*100),
+      cost_price_minor:Math.round(cost*100),
+      stock_qty_milli:Math.round(stock*1000),
+      unit:document.getElementById("pUnit").value.trim()||"piece"
+    })});
+    showMessage("appMessage","Product saved successfully.","success");
+    showPage("products");
+  } catch(error) {
+    showMessage("appMessage",error.message);
+  }
+}
+
+function logout() {
+  token="";
+  currentBusiness=null;
+  sessionStorage.removeItem("jp_token");
+  showHome();
+}
+
+async function start() {
+  await loadDemo();
+  if(token) {
+    try {
+      const result=await api("/api/auth/me");
+      await openDashboard(result.user);
+    } catch(error) {
+      logout();
+    }
+  }
+}
+
+start();
+</script>
+</body>
+</html>
